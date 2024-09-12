@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define N 4  // Number of tasks/workers
+
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int findMinCost(int cost[N][N], int assigned[N], int worker, int totalCost) {
+    if (worker == N) return totalCost;
+
+    int minCost = INT_MAX;
+
+    for (int task = 0; task < N; task++) {
+        if (!assigned[task]) {
+            assigned[task] = 1;
+            int currCost = findMinCost(cost, assigned, worker + 1, totalCost + cost[worker][task]);
+            minCost = min(minCost, currCost);
+            assigned[task] = 0;  // Backtrack
+        }
+    }
+    return minCost;
+}
+
+int main() {
+    int cost[N][N] = {
+        {9, 2, 7, 8},
+        {6, 4, 3, 7},
+        {5, 8, 1, 8},
+        {7, 6, 9, 4}
+    };
+    int assigned[N] = {0};
+    printf("Minimum cost: %d\n", findMinCost(cost, assigned, 0, 0));
+    return 0;
+}
